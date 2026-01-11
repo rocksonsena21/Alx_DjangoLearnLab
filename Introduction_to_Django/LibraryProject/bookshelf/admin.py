@@ -1,10 +1,8 @@
 from django.contrib import admin
-from .models import Book  # relative import, correct way
+from .models import Book  # relative import is correct
 
-# Register your models here.
-
-@admin.register(Book)  # decorator style
+@admin.register(Book)
 class BookAdmin(admin.ModelAdmin):
-    list_display = ('title', 'author', 'publication_year')  # columns shown
-    list_filter = ('publication_year', 'author')             # filters on right
-    search_fields = ('title', 'author')                     # search bar
+    list_display = ('title', 'author', 'publication_year')
+    list_filter = ('publication_year', 'author')
+    search_fields = ('title', 'author')
