@@ -50,3 +50,25 @@ def delete_book(request, pk):
         book.delete()
         return redirect('book_list')
     return render(request, 'bookshelf/delete_book.html', {'book': book})
+
+
+
+from django.contrib.auth.decorators import login_required
+from .models import Book
+from .forms import BookForm
+
+@login_required
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, 'bookshelf/book_list.html', {'books': books})
+
+
+@login_required
+def create_book(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()  # ORM prevents SQL injection
+    else:
+        form = BookForm()
+    return render(request, 'bookshelf/form_example.html', {'form': form})

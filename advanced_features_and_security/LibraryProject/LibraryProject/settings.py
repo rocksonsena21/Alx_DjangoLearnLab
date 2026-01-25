@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-vqjazbw^vq7^nebkw+twg1^!#75(fcs_lj0s%z^67-crz^ni-)'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     'bookshelf',
     'relationship_app',
 ]
+
+# Security best practices enabled to prevent XSS, CSRF, and clickjacking
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -127,5 +130,15 @@ LOGOUT_REDIRECT_URL = "/login/"
 # Add this line at the end or near other auth settings
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
 
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+X_FRAME_OPTIONS = 'DENY'
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Content Security Policy
+CSP_DEFAULT_SRC = ("'self'",)
 
 
