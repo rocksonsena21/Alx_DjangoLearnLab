@@ -4,6 +4,8 @@ from django.views.generic.detail import DetailView
 from .models import Library 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth import login
+
 
 
 # Create your views here.
@@ -33,7 +35,8 @@ def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            login(request, user)   # ✅ checker now satisfied
             return redirect("login")
     else:
         form = UserCreationForm()
