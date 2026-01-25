@@ -121,7 +121,11 @@ STATIC_URL = 'static/'
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/login/"
 
-# Add this line to point Django to the custom user model
-AUTH_USER_MODEL = 'relationship_app.CustomUser'
+
+# LibraryProject/LibraryProject/settings.py
+
+# Add this line at the end or near other auth settings
+AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
 
 
