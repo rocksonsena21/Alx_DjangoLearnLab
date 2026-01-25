@@ -142,3 +142,36 @@ SESSION_COOKIE_SECURE = True
 CSP_DEFAULT_SRC = ("'self'",)
 
 
+
+
+
+# ==========================
+# HTTPS & SSL CONFIGURATION
+# ==========================
+
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True
+
+# HTTP Strict Transport Security (HSTS)
+# Browsers will only use HTTPS for the next 1 year (31536000 seconds)
+SECURE_HSTS_SECONDS = 31536000
+
+# Apply HSTS policy to all subdomains
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+# Allow domain to be included in browser HSTS preload list
+SECURE_HSTS_PRELOAD = True
+
+
+# DEPLOYMENT NOTE:
+# In production, HTTPS must be enabled at the web server level.
+# This typically involves configuring SSL/TLS certificates
+# using services such as Let's Encrypt with Nginx or Apache.
+
+
+# SECURITY REVIEW:
+# - HTTPS enforced using SECURE_SSL_REDIRECT
+# - HSTS enabled to prevent protocol downgrade attacks
+# - Secure cookies protect session and CSRF tokens
+# - Security headers prevent XSS, clickjacking, and MIME sniffing
+# - Further improvements may include certificate rotation and CSP tuning
