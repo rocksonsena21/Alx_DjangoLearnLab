@@ -13,6 +13,9 @@ Permissions are enforced using DRF permission classes.
 
 
 
+
+
+
 ## Filtering, Searching, and Ordering
 
 The Book list endpoint supports advanced query features.
@@ -34,3 +37,21 @@ Results can be ordered by title or publication year.
 
 Example:
 GET /api/books/?ordering=-publication_year
+
+
+
+
+
+## API Testing
+
+Unit tests were written using Django REST Framework’s APITestCase.
+
+The tests cover:
+- CRUD operations for the Book model
+- Filtering, searching, and ordering functionality
+- Authentication and permission enforcement
+
+### Running Tests
+python manage.py test api
+
+All tests run against a separate test database automatically created by Django.
