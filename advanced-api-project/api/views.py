@@ -1,10 +1,20 @@
 from django.shortcuts import render
 from rest_framework import generics
-from .models import Book
-from .serializers import BookSerializer
+from .models import Book, Author
+from .serializers import BookSerializer, AuthorSerializer
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
 
 # Create your views here.
+class AuthorListView(generics.ListAPIView):
+    """
+    Retrieves a list of all authors.
+    Accessible to everyone (authenticated or not).
+    """
+    queryset = Author.objects.all()
+    serializer_class = AuthorSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+
 class BookListView(generics.ListAPIView):
     """
     Retrieves a list of all books.
