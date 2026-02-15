@@ -47,3 +47,16 @@
 {% endif %}
 
 {% endblock %}
+
+<a href="{% url 'comment_create' post.id %}">
+    Add Comment
+</a>
+
+<a href="{% url 'comment_update' comment.id %}">
+    Edit
+</a>
+
+
+<a href="{% url 'comment_delete' comment.id %}">
+    Delete
+</a>

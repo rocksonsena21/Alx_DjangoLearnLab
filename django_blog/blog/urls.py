@@ -15,16 +15,27 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='blog/logout.html'), name='logout'),
 
 
-    path("posts/<int:post_id>/comment/new/",
-         CommentCreateView.as_view(),
-         name="comment_create"),
+     # Comment URLs (ALX REQUIRED FORMAT)
 
-    path("comment/<int:pk>/edit/",
-         CommentUpdateView.as_view(),
-         name="comment_edit"),
+    # Create
+    path(
+        "post/<int:pk>/comments/new/",
+        CommentCreateView.as_view(),
+        name="comment_create"
+    ),
 
-    path("comment/<int:pk>/delete/",
-         CommentDeleteView.as_view(),
-         name="comment_delete"),
+    # Update
+    path(
+        "comment/<int:pk>/update/",
+        CommentUpdateView.as_view(),
+        name="comment_update"
+    ),
+
+    # Delete
+    path(
+        "comment/<int:pk>/delete/",
+        CommentDeleteView.as_view(),
+        name="comment_delete"
+    ),
 
     ]
