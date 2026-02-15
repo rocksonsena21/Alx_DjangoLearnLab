@@ -6,3 +6,13 @@
 <h2>All Blog Posts</h2>
 <p>This is where blog posts will appear.</p>
 {% endblock %}
+
+
+{% for post in posts %}
+    <h3>
+        <a href="{% url 'post_detail' post.id %}">
+            {{ post.title }}
+        </a>
+    </h3>
+{% endfor %}
+
