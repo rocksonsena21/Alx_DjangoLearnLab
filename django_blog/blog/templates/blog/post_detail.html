@@ -60,3 +60,16 @@
 <a href="{% url 'comment_delete' comment.id %}">
     Delete
 </a>
+
+
+<p>Tags:
+
+{% for tag in post.tags.all %}
+
+    <a href="{% url 'posts_by_tag' tag.name %}">
+        #{{ tag.name }}
+    </a>
+
+{% endfor %}
+
+</p>

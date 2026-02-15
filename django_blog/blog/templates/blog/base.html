@@ -23,6 +23,14 @@
             <li><a href="{% url 'login' %}">Login</a></li>
             <li><a href="{% url 'register' %}">Register</a></li>
         {% endif %}
+
+        <form action="{% url 'search' %}" method="get">
+
+        <input type="text" name="q" placeholder="Search...">
+
+        <button type="submit">Search</button>
+
+        </form>
     </ul>
 </nav>
 

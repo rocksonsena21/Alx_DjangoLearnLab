@@ -7,6 +7,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from .forms import RegisterForm, CommentForm
 from .models import Post, Comment
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q  # Import Q for complex queries
+
 
 
 # ================= HOME & POSTS =================
@@ -122,3 +124,37 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         return reverse_lazy("post_detail", kwargs={
             "post_id": self.object.post.id
         })
+
+
+
+
+def search(request):
+
+    query = request.GET.get("q")
+
+    posts = []
+
+    if query:
+
+        posts = Post.objects.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+
+    return render(request, "blog/search_results.html", {
+        "query": query,
+        "posts": posts
+    })
+
+
+
+
+def posts_by_tag(request, tag_name):
+
+    posts = Post.objects.filter(tags__name__iexact=tag_name)
+
+    return render(request, "blog/posts_by_tag.html", {
+        "tag": tag_name,
+        "posts": posts
+    })
