@@ -1,24 +1,26 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
+from django.urls import reverse_lazy
+from django.views.generic import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
 from .forms import RegisterForm, CommentForm
 from .models import Post, Comment
 from django.contrib.auth.decorators import login_required
 
-# Create your views here.
+
+# ================= HOME & POSTS =================
 
 def home(request):
     return render(request, 'blog/base.html')
 
 
-
 def posts(request):
-
     posts = Post.objects.all().order_by("-published_date")
-
     return render(request, "blog/posts.html", {"posts": posts})
 
 
-
+# ================= AUTH =================
 
 def register(request):
     if request.method == "POST":
@@ -40,29 +42,15 @@ def profile(request):
     return render(request, "blog/profile.html")
 
 
+# ================= POST DETAIL =================
+
 def post_detail(request, post_id):
 
     post = get_object_or_404(Post, id=post_id)
 
     comments = post.comments.all().order_by("-created_at")
 
-    if request.method == "POST":
-
-        if not request.user.is_authenticated:
-            return redirect("login")
-
-        form = CommentForm(request.POST)
-
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.author = request.user
-            comment.save()
-
-            return redirect("post_detail", post_id=post.id)
-
-    else:
-        form = CommentForm()
+    form = CommentForm()
 
     return render(request, "blog/post_detail.html", {
         "post": post,
@@ -71,41 +59,66 @@ def post_detail(request, post_id):
     })
 
 
+# ================= COMMENT CRUD (CLASS-BASED) =================
 
 
-@login_required
-def edit_comment(request, comment_id):
+# CREATE COMMENT
+class CommentCreateView(LoginRequiredMixin, CreateView):
 
-    comment = get_object_or_404(Comment, id=comment_id)
+    model = Comment
+    form_class = CommentForm
+    template_name = "blog/comment_form.html"
 
-    if comment.author != request.user:
-        return redirect("home")
+    def form_valid(self, form):
 
-    if request.method == "POST":
+        post = get_object_or_404(Post, id=self.kwargs["post_id"])
 
-        form = CommentForm(request.POST, instance=comment)
+        form.instance.post = post
+        form.instance.author = self.request.user
 
-        if form.is_valid():
-            form.save()
-            return redirect("post_detail", post_id=comment.post.id)
+        return super().form_valid(form)
 
-    else:
-        form = CommentForm(instance=comment)
+    def get_success_url(self):
 
-    return render(request, "blog/edit_comment.html", {"form": form})
-
+        return reverse_lazy("post_detail", kwargs={
+            "post_id": self.object.post.id
+        })
 
 
+# UPDATE COMMENT
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
-@login_required
-def delete_comment(request, comment_id):
+    model = Comment
+    form_class = CommentForm
+    template_name = "blog/comment_form.html"
 
-    comment = get_object_or_404(Comment, id=comment_id)
+    def test_func(self):
 
-    if comment.author != request.user:
-        return redirect("home")
+        comment = self.get_object()
 
-    post_id = comment.post.id
-    comment.delete()
+        return self.request.user == comment.author
 
-    return redirect("post_detail", post_id=post_id)
+    def get_success_url(self):
+
+        return reverse_lazy("post_detail", kwargs={
+            "post_id": self.object.post.id
+        })
+
+
+# DELETE COMMENT
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+
+    model = Comment
+    template_name = "blog/comment_confirm_delete.html"
+
+    def test_func(self):
+
+        comment = self.get_object()
+
+        return self.request.user == comment.author
+
+    def get_success_url(self):
+
+        return reverse_lazy("post_detail", kwargs={
+            "post_id": self.object.post.id
+        })
