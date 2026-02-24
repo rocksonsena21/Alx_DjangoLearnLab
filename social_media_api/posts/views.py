@@ -7,6 +7,10 @@ from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 from .permissions import IsOwnerOrReadOnly
 
+from rest_framework import permissions
+from rest_framework import generics
+from rest_framework.response import Response
+from .serializers import PostSerializer
 
 # Post ViewSet
 class PostViewSet(viewsets.ModelViewSet):
@@ -50,27 +54,24 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from .models import Post
-from .serializers import PostSerializer
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
+class FeedView(generics.GenericAPIView):
 
-def feed(request):
+    permission_classes = [permissions.IsAuthenticated]
 
-    users_followed = request.user.following.all()
 
-    posts = Post.objects.filter(
-        author__in=users_followed
-    ).order_by('-created_at')
+    def get(self, request):
 
-    serializer = PostSerializer(
-        posts,
-        many=True
-    )
+        following_users = request.user.following.all()
 
-    return Response(serializer.data)
+        posts = Post.objects.filter(
+            author__in=following_users
+        ).order_by('-created_at')
+
+        serializer = PostSerializer(
+            posts,
+            many=True
+        )
+
+        return Response(serializer.data)
