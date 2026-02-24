@@ -8,7 +8,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework import serializers
 from rest_framework import permissions
 
-from social_media_api.accounts.models import User
 from .serializers import RegisterSerializer, LoginSerializer
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404
