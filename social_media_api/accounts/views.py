@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import serializers
+from rest_framework import permissions
 
 from social_media_api.accounts.models import User
 from .serializers import RegisterSerializer, LoginSerializer
@@ -70,32 +71,49 @@ class LoginSerializer(serializers.Serializer):
     
 
 
-User = get_user_model()
+CustomUser = get_user_model()
 
 
-# Follow user
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def follow_user(request, user_id):
+# Follow User View
+class FollowUserView(generics.GenericAPIView):
 
-    user_to_follow = get_object_or_404(User, id=user_id)
+    permission_classes = [permissions.IsAuthenticated]
 
-    request.user.following.add(user_to_follow)
-
-    return Response({
-        "message": "User followed"
-    })
+    queryset = CustomUser.objects.all()
 
 
-# Unfollow user
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def unfollow_user(request, user_id):
+    def post(self, request, user_id):
 
-    user_to_unfollow = get_object_or_404(User, id=user_id)
+        user_to_follow = get_object_or_404(
+            CustomUser.objects.all(),
+            id=user_id
+        )
 
-    request.user.following.remove(user_to_unfollow)
+        request.user.following.add(user_to_follow)
 
-    return Response({
-        "message": "User unfollowed"
-    })
+        return Response({
+            "message": "User followed"
+        })
+
+
+
+# Unfollow User View
+class UnfollowUserView(generics.GenericAPIView):
+
+    permission_classes = [permissions.IsAuthenticated]
+
+    queryset = CustomUser.objects.all()
+
+
+    def post(self, request, user_id):
+
+        user_to_unfollow = get_object_or_404(
+            CustomUser.objects.all(),
+            id=user_id
+        )
+
+        request.user.following.remove(user_to_unfollow)
+
+        return Response({
+            "message": "User unfollowed"
+        })
