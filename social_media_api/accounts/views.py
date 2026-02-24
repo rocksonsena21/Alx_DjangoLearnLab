@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import serializers
 from .serializers import RegisterSerializer, LoginSerializer
 
 
@@ -42,3 +43,23 @@ class ProfileView(APIView):
             "username": user.username,
             "email": user.email,
         })
+
+
+class LoginSerializer(serializers.Serializer):
+
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+
+        user = authenticate(
+            username=data['username'],
+            password=data['password']
+        )
+
+        if not user:
+            raise serializers.ValidationError("Invalid login")
+
+        data['user'] = user
+
+        return data
