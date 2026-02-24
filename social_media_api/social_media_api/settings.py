@@ -23,9 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-3p&=cyua@3fm(qxusp70xm7%3h&l^yp$%g)a@j&7agqzrsj*us'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['rockson-social-media-api.onrender.com',]
 
 
 # Application definition
@@ -136,3 +136,9 @@ REST_FRAMEWORK = {
 
     'PAGE_SIZE': 5,
 }
+
+
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_SSL_REDIRECT = True  # if using HTTPS
